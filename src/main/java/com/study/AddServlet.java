@@ -7,36 +7,38 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.http.*;
 
-@WebServlet("/list")
-public class ListServlet extends HttpServlet {
+@WebServlet("/add")
+public class AddServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		// 1. request param
-
-		// 2. business logic
-		HttpSession session = request.getSession();
-		Object o = session.getAttribute("db");
-
-		if (o == null) {
-			o = new ArrayList<String>();
-			session.setAttribute("db", o);
-		}
-
+		
+		// 2. business login
+		
 		// 3. add attribute
-		request.setAttribute("list", o);
-//		request.setAttribute("list", List.of("태웅", "백호", "태섭", "대만"));
-
+		
 		// 4. forward / redirect
-		String view = "/WEB-INF/views/list.jsp";
+		String view = "/WEB-INF/views/add.jsp";
 		request.getRequestDispatcher(view).forward(request, response);
 	}
 
-	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		// 1. get request param
+		String name = request.getParameter("name");
+		// 2. business login
+		HttpSession session = request.getSession();
+		List<String> list = (List<String>) session.getAttribute("db");
+		
+		list.add(name);
+		// 3. add attribute
+		
+//		 4. forward / redirect
+		String location = request.getContextPath() + "/list";
+		response.sendRedirect(location);
 	}
 
 }
